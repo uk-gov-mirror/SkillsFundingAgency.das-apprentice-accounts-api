@@ -28,7 +28,7 @@ public class PatchMyApprenticeshipCommandHandler : IRequestHandler<PatchMyAppren
 
         if (myApprenticeship == null)
         {
-            _logger.LogInformation("Apprenticeship not found for apprenticeId {ApprenticeId", request.ApprenticeId);
+            _logger.LogInformation("Apprenticeship not found for apprenticeId {ApprenticeId}", request.ApprenticeId);
             return false;
         }
 
