@@ -9,6 +9,11 @@ using System;
 using MediatR;
 using System.Net;
 using SFA.DAS.ApprenticeAccounts.Application.Queries.GetMyApprenticeshipByUlnQuery;
+using System.Reflection.Metadata.Ecma335;
+using Azure;
+using SFA.DAS.ApprenticeAccounts.Application.Commands.PatchMyApprenticeshipCommand;
+using SFA.DAS.ApprenticeAccounts.DTOs.MyApprenticeship;
+using Microsoft.AspNetCore.JsonPatch;
 
 
 namespace SFA.DAS.ApprenticeAccounts.Api.Controllers;
@@ -75,6 +80,22 @@ public class MyApprenticeshipController : ControllerBase
         return Ok(result.MyApprenticeship);
     }
 
+    [HttpPatch]
+    [Route("apprentice/{id}/MyApprenticeship")]
+    public async Task<IActionResult> PatchMyApprenticeship(Guid id, [FromBody] JsonPatchDocument<MyApprenticeshipDto> patchData)
+    {
+        if (patchData == null)
+        {
+            return BadRequest();
+        }
+
+        var command = new PatchMyApprenticeshipCommand(id, patchData);
+
+        var result = await _mediator.Send(command);
+
+        return result ? NoContent() : NotFound();
+    }
+
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -97,7 +118,5 @@ public class MyApprenticeshipController : ControllerBase
 
             return BadRequest(ex.Message);
         }
-
-      
     }
 }
